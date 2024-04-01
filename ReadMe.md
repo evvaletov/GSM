@@ -13,6 +13,7 @@ The Generalized Spallation Model, herein GSM, is a *mostly* object-oriented even
 + [Build Requirements](#build-requirements)
 + [Compilation](#compilation)
    + [Testing](#testing)
+   + [Troubleshooting](#troubleshooting)
 + [Usage](#usage)
    + [Standalone Usage](#standalone-usage)
    + [Client Usage](#client-usage)
@@ -92,6 +93,15 @@ Developers of the GSM will want to create a regression test baseline upon initia
 ```bash
 sh -e test/regression/bin/updateOutputs.sh
 ```
+
+
+## Troubleshooting <a name="troubleshooting"></a>
+
+If you encounter segmentation faults due to stack overflow, you may need to increase the stack size limit on your system. On Unix-like systems, including Linux and macOS, you can use the `ulimit` command to increase the stack size. Setting it to `unlimited` may resolve these issues:
+```bash
+ulimit -s unlimited
+```
+This command increases the stack size limit for the current shell session. Consider adding it to your shell profile (e.g., `.bashrc` or `.profile`) to make the change permanent for your user. Note that very large stack sizes can have performance implications, so adjust as necessary based on your simulation needs.
 
 
 ## Usage <a name="usage"></a>
