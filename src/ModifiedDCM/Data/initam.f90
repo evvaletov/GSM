@@ -167,7 +167,9 @@
        look(i) = 0
     enddo
     if(nodcay) return
-    rewind decayUnit
+    if (decayUnit /= -1_int32) then
+        rewind decayUnit
+    endif
 
 200 loop=loop+1
     if(loop > 600) go to 9999
