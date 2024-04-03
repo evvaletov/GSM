@@ -13,6 +13,7 @@ The Generalized Spallation Model, herein GSM, is a *mostly* object-oriented even
 + [Build Requirements](#build-requirements)
 + [Compilation](#compilation)
    + [Testing](#testing)
+   + [Docker Deployment](#docker-deployment)
 + [Usage](#usage)
    + [Standalone Usage](#standalone-usage)
    + [Client Usage](#client-usage)
@@ -76,6 +77,7 @@ GSM module files are all placed within the `modules` folder of the build path. C
 
 
 ### Testing <a name="testing"></a>
+
 Upon creation of the GSM executable, users should perform all provided regression tests to verify the proper compilation f the GSM event generator. The folder `test`, housed in the top-level GSM directory, contains all available tests for users.  
 A script is provided to perform all regression tests to compare the results produced by GSM when built by `GCC6.3.0`. A limited number of tests are currently provided (30 at this time) with small event limits. It is recognized that the provided regression suite is not particularly thorough, however it is assumed to be sufficient to catch the majority of unintended changes.
  
@@ -92,6 +94,23 @@ Developers of the GSM will want to create a regression test baseline upon initia
 ```bash
 sh -e test/regression/bin/updateOutputs.sh
 ```
+
+
+### Docker Deployment <a name="docker-deployment"></a>
+
+A Dockerfile is provided to faciliate deployment of the GSM on a variety of systems using a Docker image.
+
+To build the Docker image for the GSM, navigate to the root directory of the GSM project and run:
+```bash
+docker build --build-arg UID=$(id -u) --build-arg GID=$(id -g) -t gsm .
+```
+This command builds a Docker image named `gsm`, configuring the container to match your user and group ID for file permissions with mounted volumes.
+
+To run the GSM using Docker, use the following command:
+```bash
+docker run -it --network host -v $(pwd):/srv -w /srv gsm ./xgsm1
+```
+This command runs the `gsm` Docker image, setting the current working directory to `/srv` within the container, which is mapped to your current working directory on the host. The working directory should contain a GSM input file.
 
 
 ## Usage <a name="usage"></a>
