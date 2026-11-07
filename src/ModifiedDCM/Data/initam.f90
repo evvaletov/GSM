@@ -167,8 +167,10 @@
        look(i) = 0
     enddo
     if(nodcay) return
+    ! CLOSE leaves decayUnit unchanged; it may now refer to another file.
+    inquire(file = effectiveDecayFile, number = decayUnit)
     if (decayUnit /= -1_int32) then
-        rewind decayUnit
+       rewind decayUnit
     endif
 
 200 loop=loop+1
