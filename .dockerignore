@@ -1,0 +1,9 @@
+**
+!CMakeLists.txt
+!.cmake/
+!.cmake/**
+!src/
+!src/**
+!Docs/
+!Docs/**
+!docker-entrypoint.sh

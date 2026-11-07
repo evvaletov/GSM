@@ -1,0 +1,3 @@
+add_executable(tstDecayInitialization EXCLUDE_FROM_ALL decayInitialization.f90)
+target_link_libraries(tstDecayInitialization PRIVATE Modified_DCM)
+add_project_test(tstDecayInitialization "${CMAKE_SOURCE_DIR}/src/dataTbl")

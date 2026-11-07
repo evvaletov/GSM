@@ -98,19 +98,28 @@ sh -e test/regression/bin/updateOutputs.sh
 
 ### Docker Deployment <a name="docker-deployment"></a>
 
-A Dockerfile is provided to faciliate deployment of the GSM on a variety of systems using a Docker image.
+Build the source in your checkout with Ubuntu 24.04's GNU Fortran and CMake packages:
 
-To build the Docker image for the GSM, navigate to the root directory of the GSM project and run:
 ```bash
-docker build --build-arg UID=$(id -u) --build-arg GID=$(id -g) -t gsm .
+docker build -t gsm .
 ```
-This command builds a Docker image named `gsm`, configuring the container to match your user and group ID for file permissions with mounted volumes.
 
-To run the GSM using Docker, use the following command:
+The runtime image contains the executable and data tables. Run from a writable directory containing your GSM input file:
+
 ```bash
-docker run -it --network host -v $(pwd):/srv -w /srv gsm ./xgsm1
+docker run --rm --user "$(id -u):$(id -g)" --ulimit stack=-1:-1 \
+    -v "$PWD:/work" gsm xgsm1 -i=gsm1.inp
 ```
-This command runs the `gsm` Docker image, setting the current working directory to `/srv` within the container, which is mapped to your current working directory on the host. The working directory should contain a GSM input file.
+
+The entrypoint copies missing data tables into that directory and leaves existing files unchanged. Output files belong to the user specified by `--user`. Without a bind mount, files remain inside the container and are removed with it when `--rm` is used.
+
+The example removes the stack limit for this container: the supplied `pBe` input crashes with an 8 MiB stack and completes with an unlimited stack in the tested GNU Fortran 13 build. A larger stack does not fix other causes of segmentation faults. To check the executable without running a simulation:
+
+```bash
+docker run --rm gsm xgsm1 -help
+```
+
+The image defaults to UID/GID 1000:1000. An alternate `--user` needs a bind mount at `/work` that is writable by that UID/GID. `--build-arg BUILD_JOBS=8` changes the number of parallel build jobs. Package versions follow the Ubuntu 24.04 repositories; this recipe does not reproduce the historical GCC 6.3 regression baseline.
 
 
 ## Usage <a name="usage"></a>
