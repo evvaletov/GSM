@@ -95,13 +95,22 @@ sh -e test/regression/bin/updateOutputs.sh
 ```
 
 
-## Troubleshooting <a name="troubleshooting"></a>
+### Troubleshooting <a name="troubleshooting"></a>
 
-If you encounter segmentation faults due to stack overflow, you may need to increase the stack size limit on your system. On Unix-like systems, including Linux and macOS, you can use the `ulimit` command to increase the stack size. Setting it to `unlimited` may resolve these issues:
+If a GSM run fails because it exhausts the stack, increasing the stack limit may help. In Bash on Linux, check the soft and hard limits (in KiB) with:
+
 ```bash
-ulimit -s unlimited
+ulimit -Ss
+ulimit -Hs
 ```
-This command increases the stack size limit for the current shell session. Consider adding it to your shell profile (e.g., `.bashrc` or `.profile`) to make the change permanent for your user. Note that very large stack sizes can have performance implications, so adjust as necessary based on your simulation needs.
+
+If the hard limit is `unlimited`, try the run in a subshell with an unlimited soft limit:
+
+```bash
+(ulimit -Ss unlimited && ./xgsm1 -i=gsm1.inp)
+```
+
+This leaves the parent shell's limits unchanged. If the hard limit is finite, the soft limit can only be raised as far as that value without administrator help. A segmentation fault alone does not establish stack exhaustion; use a backtrace to investigate crashes that persist with a larger stack.
 
 
 ## Usage <a name="usage"></a>
